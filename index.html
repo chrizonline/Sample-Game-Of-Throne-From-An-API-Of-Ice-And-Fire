@@ -34,6 +34,14 @@
                 return povData;
             }
 
+            function printPovCharIntoUnorderedList(arr) {
+                let str = '';
+                arr.forEach(element => {
+                    str += `<li>${element}</li>`;
+                });
+                return str;
+            }
+
             document.querySelector("#load-btn").addEventListener("click", () => {
                 (async () => {
                     let response1 = await axios.get("https://anapioficeandfire.com/api/books/");
@@ -48,12 +56,13 @@
                             arrPovNames.push(povName);
                         }
 
+                        const unorderedList = printPovCharIntoUnorderedList(arrPovNames);
                         document.querySelector("#content").innerHTML += `
                 <p>
                   <li>Title: ${books[j].name}</li>
                   <li>Number of Pages: ${books[j].numberOfPages}</li>
                   <li>POV Characters:</li>
-                  <ul>${arrPovNames.toString()}</ul>
+                  <ul>${unorderedList}</ul>
                 </p>
                 `;
                     }

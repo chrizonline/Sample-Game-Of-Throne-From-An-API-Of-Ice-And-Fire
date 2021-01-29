@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="load-btn">Load Books</button>
+    <ul id="content">
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
+            integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
+            crossorigin="anonymous"></script>
+
+        <script type="text/javascript">
+            async function getPovChar(povUrl) {
+                if (typeof povUrl === "undefined" || povUrl === null) {
+                    return;
+                }
+
+                let povHTML;
+                console.log("povUrl=", povUrl);
+                let response2 = null;
+                try {
+                    response2 = await axios.get(povUrl);
+                } catch {
+                    console.error(`Error occurred while calling ${povUrl}`, e);
+                }
+                let povData = response2.data.name;
+                console.log(povData);
+                return povData;
+            }
+
+            document.querySelector("#load-btn").addEventListener("click", () => {
+                (async () => {
+                    let response1 = await axios.get("https://anapioficeandfire.com/api/books/");
+                    let books = response1.data;
+
+                    for (let j = 0; j < books.length; j++) {
+                        let povApiArray = books[j].povCharacters;
+                        const arrPovNames = [];
+                        for (let i = 0; i < povApiArray.length; i++) {
+                            let povAPI = povApiArray[i];
+                            const povName = await getPovChar(povAPI);
+                            arrPovNames.push(povName);
+                        }
+
+                        document.querySelector("#content").innerHTML += `
+                <p>
+                  <li>Title: ${books[j].name}</li>
+                  <li>Number of Pages: ${books[j].numberOfPages}</li>
+                  <li>POV Characters:</li>
+                  <ul>${arrPovNames.toString()}</ul>
+                </p>
+                `;
+                    }
+                })();
+            });
+
+        </script>
+</body>
+
+</html>
